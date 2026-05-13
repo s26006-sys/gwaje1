@@ -1,5 +1,6 @@
 package com.example.gwaje.controller;
 
+import com.example.gwaje.dto.SignUpRequestDto;
 import com.example.gwaje.entity.User;
 import com.example.gwaje.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,18 +22,24 @@ public class JoinController {
     }
 
     @PostMapping("/joinProc")
-    public String joinProc(User user) {
-        System.out.println("회원가입 진행 : " + user.getUsername());
+    public String joinProc(SignUpRequestDto signUpDto) { // User 대신 DTO로 받기
+        System.out.println("회원가입 진행 ID : " + signUpDto.getUsername());
 
-        // 비번 암호화 후 세팅
-        String rawPassword = user.getPassword();
+        // 1. DTO 데이터를 Entity로 옮기기
+        User user = new User();
+        user.setUsername(signUpDto.getUsername());
+
+        // 2. 비밀번호 암호화 후 세팅
+        String rawPassword = signUpDto.getPassword();
         String encPassword = bCryptPasswordEncoder.encode(rawPassword);
         user.setPassword(encPassword);
 
-        // 권한 설정
+        // 3. 권한 설정
         user.setRole("ROLE_USER");
 
+        // 4. DB 저장
         userRepository.save(user);
+
         return "redirect:/login";
     }
 

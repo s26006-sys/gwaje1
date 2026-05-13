@@ -11,10 +11,10 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor // 서비스를 주입받기 위해 추가
+@RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final PrincipalDetailsService principalDetailsService; // 우리가 만든 서비스
+    private final PrincipalDetailsService principalDetailsService;
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -30,7 +30,7 @@ public class SecurityConfig {
                 )
                 .formLogin((form) -> form
                         .loginPage("/login")
-                        .loginProcessingUrl("/loginProc") // 중요! HTML 폼의 action과 맞춰야 함
+                        .loginProcessingUrl("/loginProc")
                         .defaultSuccessUrl("/")
                         .permitAll()
                 )
@@ -41,7 +41,7 @@ public class SecurityConfig {
 
         http.csrf((auth) -> auth.disable());
 
-        // 시큐리티가 우리가 만든 서비스를 사용하게 함
+
         http.userDetailsService(principalDetailsService);
 
         return http.build();
